@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2016 Sony Mobile Communications Inc.
+# All rights, including trade secret rights, reserved.
+#
+
+service wvkbd_installer /system/bin/wvkbd
+    class late_start
+    user system
+    group system
+    oneshot
+
+on post-fs-data
+    # Create directory for hdcp-sdk
+    mkdir /data/hdcp-sdk 0775 system system

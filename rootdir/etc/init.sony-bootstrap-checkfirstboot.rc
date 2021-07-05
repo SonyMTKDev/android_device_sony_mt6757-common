@@ -1,0 +1,12 @@
+#
+# Copyright (C) 2014 Sony Mobile Communications Inc.
+# All rights, including trade secret rights, reserved.
+#
+
+#
+# init.sony-bootstrap-checkfirstboot.rc
+#
+
+on init
+    exec u:r:tad:s0 system -- /sbin/checkfirstboot
+
