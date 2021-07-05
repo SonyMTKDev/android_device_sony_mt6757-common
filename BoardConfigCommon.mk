@@ -40,6 +40,9 @@ TARGET_2ND_CPU_VARIANT := cortex-a53
 # Audio
 USE_XML_AUDIO_POLICY_CONF := 1
 
+# Bluetooth
+BOARD_HAVE_BLUETOOTH := true
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/sony/mt6757
