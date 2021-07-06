@@ -86,6 +86,10 @@ BOARD_CONNECTIVITY_MODULE := conn_soc
 # Headers
 TARGET_SPECIFIC_HEADER_PATH := $(COMMON_PATH)/include
 
+# HIDL Manifest
+DEVICE_MANIFEST_FILE := $(COMMON_PATH)/manifest.xml
+DEVICE_MATRIX_FILE := $(COMMON_PATH)/compatibility_matrix.xml
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/sony/mt6757
