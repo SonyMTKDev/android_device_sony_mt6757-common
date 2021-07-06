@@ -55,6 +55,9 @@ BACKLIGHT_PATH := /sys/class/leds/lcd-backlight/brightness
 WITH_DEXPREOPT := true
 DONT_DEXPREOPT_PREBUILTS := true
 
+# Display
+USE_OPENGL_RENDERER:=true
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/sony/mt6757
