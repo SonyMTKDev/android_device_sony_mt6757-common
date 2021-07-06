@@ -53,6 +53,7 @@ BACKLIGHT_PATH := /sys/class/leds/lcd-backlight/brightness
 
 # Dexpreopt
 WITH_DEXPREOPT := true
+DONT_DEXPREOPT_PREBUILTS := true
 
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
