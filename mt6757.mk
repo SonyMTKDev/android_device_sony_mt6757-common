@@ -40,7 +40,8 @@ PRODUCT_PACKAGES += \
     audio.r_submix.default \
     audio.a2dp.default \
     audio.usb.default \
-    audio_policy.stub
+    audio_policy.stub \
+    libaudio-resampler
 
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/audio/audio_effects.conf:system/etc/audio_effects.conf \
