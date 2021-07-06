@@ -168,7 +168,7 @@ on fs
 
 on post-fs
     write /proc/bootprof "INIT:post-fs"
-	
+
     # Support legacy paths
     symlink /sdcard /storage/sdcard0
 
@@ -204,6 +204,14 @@ on post-fs
     chmod 0770 /protect_f
     chown system system /protect_s
     chmod 0770 /protect_s
+
+    # Force properties for mtkmal
+    setprop persist.mtk_ims_support 0
+    setprop persist.mtk_epdg_support 0
+
+on property:vold.decrypt=trigger_restart_framework
+    setprop persist.mtk_ims_support 0
+    setprop persist.mtk_epdg_support 0
 
 on post-fs-data
     write /proc/bootprof "INIT:post-fs-data"
