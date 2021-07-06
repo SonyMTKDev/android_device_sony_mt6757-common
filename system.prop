@@ -38,9 +38,6 @@ ro.zygote.preload.enable=0
 # Kernel
 ro.kernel.zio=38,108,105,16
 
-# Display
-ro.sf.lcd_density=480
-
 # Revision
 ro.revision=p2a0
 ro.hw.revision=p2a0
