@@ -240,6 +240,8 @@ PRODUCT_PACKAGES += \
 
 # WiFi
 PRODUCT_PACKAGES += \
+    android.hardware.wifi@1.0 \
+    android.hardware.wifi@1.0-service \
     lib_driver_cmd_mt66xx \
     libwifi-hal-mt66xx \
     libwpa_client \
