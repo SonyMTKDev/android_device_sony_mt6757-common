@@ -133,6 +133,10 @@
          with HWC 2.0 or higher. -->
     <bool name="config_nightDisplayAvailable">true</bool>
 
+    <!-- When true use the linux /dev/input/event subsystem to detect the switch changes
+         on the headphone/microphone jack. When false use the older uevent framework. -->
+    <bool name="config_useDevInputEventForAudioJack">true</bool>
+
     <!-- Enable doze mode
          ComponentName of a dream to show whenever the system would otherwise have
          gone to sleep.  When the PowerManager is asked to go to sleep, it will instead
