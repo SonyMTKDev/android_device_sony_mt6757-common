@@ -22,6 +22,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 # Inherit from the common Open Source product configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
+# Vendor
+$(call inherit-product-if-exists, vendor/sony/mt6757-common/mt6757-common-vendor.mk)
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
     $(COMMON_PATH)/overlay \
@@ -298,6 +301,3 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xxxhdpi-3072-dal
 
 # Call hwui memory config
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxxhdpi-3072-hwui-memory.mk)
-
-# Vendor
-$(call inherit-product-if-exists, vendor/sony/mt6757-common/mt6757-common-vendor.mk)
