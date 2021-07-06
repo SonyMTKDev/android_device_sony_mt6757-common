@@ -121,6 +121,9 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 # Recovery
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/etc/fstab.mt6757
 
+# Sensors
+TARGET_NO_SENSOR_PERMISSION_CHECK := true
+
 # Seccomp filters
 BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 
