@@ -299,4 +299,4 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xxxhdpi-3072-dal
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxxhdpi-3072-hwui-memory.mk)
 
 # Vendor
-$(call inherit-product-if-exists, vendor/sony/mt6757-common/mt6757-commn-vendor.mk)
+$(call inherit-product-if-exists, vendor/sony/mt6757-common/mt6757-common-vendor.mk)
