@@ -42,7 +42,8 @@ PRODUCT_PACKAGES += \
     audio.usb.default \
     audio_policy.stub \
     libaudio-resampler \
-    libtinyalsa
+    libtinyalsa \
+    libtinycompress
 
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/audio/audio_effects.conf:system/etc/audio_effects.conf \
