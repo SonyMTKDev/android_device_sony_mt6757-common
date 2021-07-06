@@ -67,6 +67,11 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.device@3.2-service \
     Snap
 
+# Configstore
+PRODUCT_PACKAGES += \
+    android.hardware.configstore@1.0-impl \
+    android.hardware.configstore@1.0-service
+
 # Graphics
 PRODUCT_PACKAGES += \
     libGLES_android
