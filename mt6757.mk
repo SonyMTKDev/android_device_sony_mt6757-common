@@ -111,6 +111,10 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/media/media_codecs_performance.xml:system/vendor/etc/media_codecs_performance.xml \
     $(COMMON_PATH)/media/media_profiles.xml:system/vendor/etc/media_profiles.xml
 
+# OMX
+PRODUCT_PACKAGES += \
+    android.hardware.media.omx@1.0-service
+
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/vendor/etc/permissions/android.hardware.audio.low_latency.xml \
