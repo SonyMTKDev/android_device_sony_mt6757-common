@@ -167,6 +167,11 @@ PRODUCT_PACKAGES += \
     android.hardware.broadcastradio@1.0-impl \
     android.hardware.broadcastradio@1.0-service
 
+# RIL
+PRODUCT_PACKAGES+= \
+    android.hardware.radio@1.0 \
+    android.hardware.radio.deprecated@1.0
+
 # Rootdir
 PRODUCT_PACKAGES += \
     factory_init.connectivity.rc \
