@@ -114,8 +114,8 @@ PRODUCT_PACKAGES += \
 
 # Keylayout
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/keylayout/mtk-kpd.kl:system/usr/keylayout/mtk-kpd.kl \
-    $(COMMON_PATH)/keylayout/mtk-tpd.idc:system/usr/idc/mtk-tpd.idc
+    $(COMMON_PATH)/configs/keylayout/mtk-kpd.kl:system/usr/keylayout/mtk-kpd.kl \
+    $(COMMON_PATH)/configs/keylayout/mtk-tpd.idc:system/usr/idc/mtk-tpd.idc
 
 # Media
 PRODUCT_COPY_FILES += \
