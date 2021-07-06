@@ -59,6 +59,13 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service
 
+# Camera
+PRODUCT_PACKAGES += \
+    android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service \
+    android.hardware.camera.device@3.2-impl \
+    android.hardware.camera.device@3.2-service
+
 # Graphics
 PRODUCT_PACKAGES += \
     libGLES_android
