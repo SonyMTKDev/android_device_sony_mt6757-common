@@ -1219,6 +1219,7 @@ vendor/bin/mnld
 vendor/lib64/hw/flp.mt6757.so
 vendor/lib/libcurl-ss.so
 vendor/lib64/libcurl-ss.so
+lib/libandroid_net.so
 
 # Keymaster
 lib/vendor.mediatek.hardware.keymaster_attestation@1.0.so
