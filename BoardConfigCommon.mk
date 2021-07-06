@@ -133,3 +133,6 @@ TARGET_SYSTEM_PROP := $(COMMON_PATH)/system.prop
 
 # Use dlmalloc instead of jemalloc for mallocs
 MALLOC_SVELTE := true
+
+# Webkit
+ENABLE_WEBGL := true
