@@ -41,7 +41,8 @@ PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.usb.default \
     audio_policy.stub \
-    libaudio-resampler
+    libaudio-resampler \
+    libtinyalsa
 
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/audio/audio_effects.conf:system/etc/audio_effects.conf \
