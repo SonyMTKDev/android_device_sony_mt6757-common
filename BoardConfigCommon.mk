@@ -130,3 +130,6 @@ BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 # System Properties
 BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
 TARGET_SYSTEM_PROP := $(COMMON_PATH)/system.prop
+
+# Use dlmalloc instead of jemalloc for mallocs
+MALLOC_SVELTE := true
