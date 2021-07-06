@@ -79,6 +79,9 @@ EXTENDED_FONT_FOOTPRINT := true
 # Gatekeeper
 BOARD_USE_SOFT_GATEKEEPER := true
 
+# GPS
+BOARD_GPS_LIBRARIES := true
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/sony/mt6757
