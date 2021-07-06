@@ -142,6 +142,11 @@ MALLOC_SVELTE := true
 ENABLE_WEBGL := true
 TARGET_FORCE_CPU_UPLOAD := true
 
+# Shim Libraries
+TARGET_LD_SHIM_LIBS := \
+	/system/lib/libprogrambinary.so|libshim_program_binary.so \
+	/system/lib64/libprogrambinary.so|libshim_program_binary.so
+
 # Wifi
 BOARD_WLAN_DEVICE := MediaTek
 WPA_SUPPLICANT_VERSION := VER_0_8_X
