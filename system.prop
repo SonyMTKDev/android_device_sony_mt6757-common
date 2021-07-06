@@ -193,3 +193,7 @@ persist.sys.media.use-awesome=false
 persist.cne.rat.wlan.chip.oem=WCN
 keyguard.no_require_sim=true
 mdc_initial_max_retry=10
+
+# Import OEM properties
+import /oem/system-properties/cust.prop
+import /oem/system-properties/config.prop
