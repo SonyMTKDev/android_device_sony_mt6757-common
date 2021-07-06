@@ -221,6 +221,11 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/seccomp/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy \
     $(COMMON_PATH)/seccomp/mediaextractor.policy:system/vendor/etc/seccomp_policy/mediaextractor.policy
 
+# Thermal
+PRODUCT_PACKAGES += \
+    android.hardware.thermal@1.0-impl \
+    android.hardware.thermal@1.0-service
+
 # WiFi
 PRODUCT_PACKAGES += \
     lib_driver_cmd_mt66xx \
