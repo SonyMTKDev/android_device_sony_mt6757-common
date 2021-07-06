@@ -560,7 +560,6 @@ vendor/lib/hw/thermal.mt6757.so
 vendor/lib64/hw/thermal.mt6757.so
 vendor/etc/throttle.sh
 vendor/lib/libmtcloader.so
-lib/libterservice.so
 lib64/libterservice.so
 
 # Priv-app Permissions
