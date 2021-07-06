@@ -396,7 +396,8 @@ vendor/lib/libidd.so
 vendor/lib64/libta.so
 vendor/lib64/libmiscta.so
 vendor/lib64/libidd.so
-
+lib/libtpm.so
+lib64/libtpm.so
 
 # Fota
 bin/factory
@@ -545,6 +546,8 @@ vendor/lib/hw/thermal.mt6757.so
 vendor/lib64/hw/thermal.mt6757.so
 vendor/etc/throttle.sh
 vendor/lib/libmtcloader.so
+lib/libterservice.so
+lib64/libterservice.so
 
 # Priv-app Permissions
 etc/default-permissions/pre_grant_permissions_oem.xml
