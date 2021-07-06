@@ -161,7 +161,8 @@ PRODUCT_PACKAGES += \
 
 # Shim Libraries
 PRODUCT_PACKAGES += \
-    libshim_program_binary
+    libshim_program_binary \
+    libshim_fake_log_print
 
 # Permissions
 PRODUCT_COPY_FILES += \

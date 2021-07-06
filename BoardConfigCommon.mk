@@ -145,7 +145,9 @@ TARGET_FORCE_CPU_UPLOAD := true
 # Shim Libraries
 TARGET_LD_SHIM_LIBS := \
 	/system/lib/libprogrambinary.so|libshim_program_binary.so \
-	/system/lib64/libprogrambinary.so|libshim_program_binary.so
+	/system/lib64/libprogrambinary.so|libshim_program_binary.so \
+	/system/lib/libaalservice.so|libshim_fake_log_print.so \
+	/system/lib64/libaalservice.so|libshim_fake_log_print.so
 
 # Wifi
 BOARD_WLAN_DEVICE := MediaTek
