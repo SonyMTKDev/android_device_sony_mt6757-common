@@ -132,6 +132,11 @@ PRODUCT_PACKAGES += \
     android.hardware.memtrack@1.0-impl \
     android.hardware.memtrack@1.0-service
 
+# Misc
+PRODUCT_PACKAGES += \
+    librs_jni \
+    libnl_2
+
 # NFC
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0 \
