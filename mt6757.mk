@@ -116,6 +116,11 @@ PRODUCT_PACKAGES += \
     android.hardware.memtrack@1.0-impl \
     android.hardware.memtrack@1.0-service
 
+# NFC
+PRODUCT_PACKAGES += \
+    android.hardware.nfc@1.0 \
+    android.hardware.nfc@1.0-impl
+
 # OMX
 PRODUCT_PACKAGES += \
     android.hardware.media.omx@1.0-service
