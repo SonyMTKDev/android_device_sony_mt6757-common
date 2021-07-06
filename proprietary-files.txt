@@ -51,11 +51,8 @@ lib64/libfpspolicy_fw.so
 # Audio
 bin/audiocmdservice_atci
 bin/AudioSetParam
-lib/libaaudioservice.so
-lib/libaaudio.so
 lib/libaudio_param_parser-sys.so
 lib/vendor.mediatek.hardware.audio@2.1.so
-lib64/libaaudio.so
 lib64/libaudio_param_parser-sys.so
 lib64/vendor.mediatek.hardware.audio@2.1.so
 vendor/lib/libaudiocompensationfilter.so
