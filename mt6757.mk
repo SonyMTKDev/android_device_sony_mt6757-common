@@ -54,6 +54,11 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/audio/r_submix_audio_policy_configuration.xml:system/vendor/etc/r_submix_audio_policy_configuration.xml \
     $(COMMON_PATH)/audio/usb_audio_policy_configuration.xml:system/vendor/etc/usb_audio_policy_configuration.xml
 
+# Bluetooth
+PRODUCT_PACKAGES += \
+    android.hardware.bluetooth@1.0-impl \
+    android.hardware.bluetooth@1.0-service
+
 # Graphics
 PRODUCT_PACKAGES += \
     libGLES_android
