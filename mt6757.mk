@@ -61,6 +61,7 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/configs/audio/audio_policy.conf:system/vendor/etc/audio_policy.conf \
     $(COMMON_PATH)/configs/audio/audio_policy_configuration.xml:system/vendor/etc/audio_policy_configuration.xml \
     $(COMMON_PATH)/configs/audio/audio_policy_volumes.xml:system/vendor/etc/audio_policy_volumes.xml \
+    $(COMMON_PATH)/configs/audio/default_volume_tables.xml:system/vendor/etc/default_volume_tables.xml \
     $(COMMON_PATH)/configs/audio/r_submix_audio_policy_configuration.xml:system/vendor/etc/r_submix_audio_policy_configuration.xml \
     $(COMMON_PATH)/configs/audio/usb_audio_policy_configuration.xml:system/vendor/etc/usb_audio_policy_configuration.xml
 
