@@ -884,6 +884,12 @@ service nvram_write /system/bin/nvram_write
     group system
     oneshot
 
+service led_service /system/bin/led_service
+    class main
+    socket led_socket stream 660 system system
+    user system
+    group system
+
 service g_read_miscta /system/bin/g_read_miscta
     class main
     user root
