@@ -136,3 +136,4 @@ MALLOC_SVELTE := true
 
 # Webkit
 ENABLE_WEBGL := true
+TARGET_FORCE_CPU_UPLOAD := true
