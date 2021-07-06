@@ -64,6 +64,9 @@ PRESENT_TIME_OFFSET_FROM_VSYNC_NS := 0
 OVERRIDE_RS_DRIVER := libRSDriver_mtk.so
 TARGET_USES_HWC2 := true
 
+# Disable memcpy opt (for audio libraries)
+TARGET_CPU_MEMCPY_OPT_DISABLE := true
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/sony/mt6757
