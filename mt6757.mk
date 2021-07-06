@@ -220,7 +220,6 @@ PRODUCT_PACKAGES += \
     init.sony-bootstrap-mr.rc \
     init.sony-bootstrap.rc \
     init.sony-bootstrap-wipedata.rc \
-    init.sony-bugreport.rc \
     init.sony-drm.rc \
     init.sony-enterprise.rc \
     init.sony-fota.rc \

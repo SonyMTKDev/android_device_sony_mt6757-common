@@ -857,13 +857,6 @@ on property:ro.boot.boot_trace=1
 on property:persist.uartconsole.enable=1
     write /proc/mtprintk 1
 
-service bugreport /system/bin/dumpstate -d -p -B -z \
-        -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
-    class late_start
-    disabled
-    oneshot
-    keycodes 114 115 116
-
 on property:sys.boot_completed=1
     write /proc/ppm/policy/userlimit_min_cpu_freq "1 -1"
     write /proc/ppm/policy/userlimit_min_cpu_core "1 -1"
