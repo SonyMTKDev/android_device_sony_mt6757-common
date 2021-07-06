@@ -119,13 +119,13 @@ PRODUCT_COPY_FILES += \
 
 # Media
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/media/media_codecs.xml:system/vendor/etc/media_codecs.xml \
-    $(COMMON_PATH)/media/media_codecs_google_audio.xml:system/vendor/etc/media_codecs_google_audio.xml \
-    $(COMMON_PATH)/media/media_codecs_google_video_le.xml:system/vendor/etc/media_codecs_google_video_le.xml \
-    $(COMMON_PATH)/media/media_codecs_mediatek_audio.xml:system/vendor/etc/media_codecs_mediatek_audio.xml \
-    $(COMMON_PATH)/media/media_codecs_mediatek_video.xml:system/vendor/etc/media_codecs_mediatek_video.xml \
-    $(COMMON_PATH)/media/media_codecs_performance.xml:system/vendor/etc/media_codecs_performance.xml \
-    $(COMMON_PATH)/media/media_profiles.xml:system/vendor/etc/media_profiles.xml
+    $(COMMON_PATH)/configs/media/media_codecs.xml:system/vendor/etc/media_codecs.xml \
+    $(COMMON_PATH)/configs/media/media_codecs_google_audio.xml:system/vendor/etc/media_codecs_google_audio.xml \
+    $(COMMON_PATH)/configs/media/media_codecs_google_video_le.xml:system/vendor/etc/media_codecs_google_video_le.xml \
+    $(COMMON_PATH)/configs/media/media_codecs_mediatek_audio.xml:system/vendor/etc/media_codecs_mediatek_audio.xml \
+    $(COMMON_PATH)/configs/media/media_codecs_mediatek_video.xml:system/vendor/etc/media_codecs_mediatek_video.xml \
+    $(COMMON_PATH)/configs/media/media_codecs_performance.xml:system/vendor/etc/media_codecs_performance.xml \
+    $(COMMON_PATH)/configs/media/media_profiles.xml:system/vendor/etc/media_profiles.xml
 
 # Memtrack
 PRODUCT_PACKAGES += \
