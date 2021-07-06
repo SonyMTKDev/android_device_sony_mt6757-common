@@ -254,8 +254,6 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/configs/thermal/.thermal_policy_00:system/vendor/etc/.tp/.thermal_policy_00 \
     $(COMMON_PATH)/configs/thermal/.thermal_policy_01:system/vendor/etc/.tp/.thermal_policy_01 \
     $(COMMON_PATH)/configs/thermal/.thermal_policy_02:system/vendor/etc/.tp/.thermal_policy_02 \
-    $(COMMON_PATH)/configs/thermal/.thermal_policy_03:system/vendor/etc/.tp/.thermal_policy_03 \
-    $(COMMON_PATH)/configs/thermal/.thermal_policy_04:system/vendor/etc/.tp/.thermal_policy_04 \
     $(COMMON_PATH)/configs/thermal/.thermal_policy_05:system/vendor/etc/.tp/.thermal_policy_05 \
     $(COMMON_PATH)/configs/thermal/.thermal_policy_06:system/vendor/etc/.tp/.thermal_policy_06
 
