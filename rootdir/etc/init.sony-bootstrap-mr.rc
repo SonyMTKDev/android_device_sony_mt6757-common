@@ -3,12 +3,5 @@
 # All rights, including trade secret rights, reserved.
 #
 
-#
-# init.sony-bootstrap-mr.rc
-#
-
 on init
-    # SONY: mr need to be started before mount_all
-    # wait /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/cache
-    # wait /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata
     exec u:r:recovery:s0 root root cache system trimarea graphics -- /sbin/mr

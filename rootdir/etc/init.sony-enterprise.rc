@@ -2,11 +2,6 @@
 # Copyright (C) 2016 Sony Mobile Communications Inc.
 # All rights, including trade secret rights, reserved.
 #
-
-#
-# init.sony-enterprise.rc
-#
-
 on fs
     insmod /system/lib/modules/ecryptfs.ko
 

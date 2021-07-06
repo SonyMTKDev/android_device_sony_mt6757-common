@@ -207,9 +207,6 @@ PRODUCT_PACKAGES+= \
 
 # Rootdir
 PRODUCT_PACKAGES += \
-    factory_init.connectivity.rc \
-    factory_init.project.rc \
-    factory_init.rc \
     fstab.enableswap \
     fstab.mt6757 \
     init.connectivity.rc \
@@ -228,11 +225,6 @@ PRODUCT_PACKAGES += \
     init.sony-enterprise.rc \
     init.sony-fota.rc \
     init.sony-trimarea.rc \
-    meta_init.connectivity.rc \
-    meta_init.modem.rc \
-    meta_init.project.rc \
-    meta_init.rc \
-    multi_init.rc \
     ueventd_mt6757.rc
 
 PRODUCT_COPY_FILES += \

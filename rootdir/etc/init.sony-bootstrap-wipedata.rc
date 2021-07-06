@@ -3,14 +3,8 @@
 # All rights, including trade secret rights, reserved.
 #
 
-#
-# init.sony-bootstrap-wipedata.rc
-#
-
 on init
-    # SONY: wipedata need to be started before mount_all
     wait /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata
     exec u:r:recovery:s0 root root cache system trimarea graphics -- /sbin/wipedata check-full-wipe
     exec u:r:installd:s0 root root cache system trimarea graphics -- /sbin/wipedata check-keep-media-wipe
     exec u:r:recovery:s0 root root cache system trimarea graphics -- /sbin/wipedata check-umount
-
