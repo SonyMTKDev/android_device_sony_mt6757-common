@@ -70,6 +70,9 @@ TARGET_CPU_MEMCPY_OPT_DISABLE := true
 # Enable Minikin text layout engine (will be the default soon)
 USE_MINIKIN := true
 
+# FIX Freezing
+TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE := true
+
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
 
