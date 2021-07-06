@@ -111,6 +111,11 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/media/media_codecs_performance.xml:system/vendor/etc/media_codecs_performance.xml \
     $(COMMON_PATH)/media/media_profiles.xml:system/vendor/etc/media_profiles.xml
 
+# Memtrack
+PRODUCT_PACKAGES += \
+    android.hardware.memtrack@1.0-impl \
+    android.hardware.memtrack@1.0-service
+
 # OMX
 PRODUCT_PACKAGES += \
     android.hardware.media.omx@1.0-service
