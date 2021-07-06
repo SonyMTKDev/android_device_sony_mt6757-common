@@ -226,6 +226,13 @@ PRODUCT_PACKAGES += \
     android.hardware.thermal@1.0-impl \
     android.hardware.thermal@1.0-service
 
+# USB
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.0 \
+    android.hardware.usb@1.0-service.basic \
+    android.hardware.usb.gadget@1.0-impl \
+    android.hardware.usb.gadget@1.0-service
+
 # WiFi
 PRODUCT_PACKAGES += \
     lib_driver_cmd_mt66xx \
