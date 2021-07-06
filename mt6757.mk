@@ -137,6 +137,10 @@ PRODUCT_PACKAGES += \
     librs_jni \
     libnl_2
 
+# MTKRC
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    ro.mtkrc.path=/vendor/etc/init/hw/
+
 # NFC
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0 \
