@@ -45,7 +45,8 @@ PRODUCT_PACKAGES += \
     libtinyalsa \
     libtinycompress \
     libtinymix \
-    libtinyxml
+    libtinyxml \
+    libtinyxml2
 
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/audio/audio_effects.conf:system/etc/audio_effects.conf \
