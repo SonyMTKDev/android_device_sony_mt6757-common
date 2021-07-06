@@ -64,7 +64,8 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     android.hardware.camera.provider@2.4-service \
     android.hardware.camera.device@3.2-impl \
-    android.hardware.camera.device@3.2-service
+    android.hardware.camera.device@3.2-service \
+    Snap
 
 # Graphics
 PRODUCT_PACKAGES += \
