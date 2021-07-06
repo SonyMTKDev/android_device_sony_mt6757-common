@@ -102,6 +102,11 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@2.0-impl \
     libGLES_android
 
+# HIDL
+PRODUCT_PACKAGES += \
+    android.hidl.base@1.0 \
+    android.hidl.manager@1.0
+
 # Keymaster
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
