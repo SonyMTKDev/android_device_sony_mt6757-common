@@ -53,7 +53,7 @@ PRODUCT_PACKAGES += \
     libxml2
 
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/configs/audio/audio_effects.conf:system/etc/audio_effects.conf \
+    $(COMMON_PATH)/configs/audio/audio_effects.xml:system/etc/audio_effects.xml \
     $(COMMON_PATH)/configs/audio/AudioParamOptions.xml:system/vendor/etc/audio_param/AudioParamOptions.xml \
     $(COMMON_PATH)/configs/audio/a2dp_audio_policy_configuration.xml:system/vendor/etc/a2dp_audio_policy_configuration.xml \
     $(COMMON_PATH)/configs/audio/audio_device.xml:system/vendor/etc/audio_device.xml \
