@@ -488,4 +488,23 @@
             <instance>default</instance>
         </interface>
     </hal>
+    <hal format="hidl">
+        <name>vendor.semc.system.idd</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IIdd</name>
+            <instance>default</instance>
+            <instance>logreader</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.semc.system.idd.fallback</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IIddFallback</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </manifest>
