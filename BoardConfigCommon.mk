@@ -47,6 +47,10 @@ BOARD_BLUETOOTH_DOES_NOT_USE_RFKILL := true
 # Boot animation
 TARGET_BOOTANIMATION_MULTITHREAD_DECODE := true
 
+# Charger
+BOARD_CHARGER_SHOW_PERCENTAGE := true
+BACKLIGHT_PATH := /sys/class/leds/lcd-backlight/brightness
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_KERNEL_SOURCE := kernel/sony/mt6757
