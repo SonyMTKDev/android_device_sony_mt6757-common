@@ -50,16 +50,16 @@ PRODUCT_PACKAGES += \
     libxml2
 
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/audio/audio_effects.conf:system/etc/audio_effects.conf \
-    $(COMMON_PATH)/audio/AudioParamOptions.xml:system/vendor/etc/audio_param/AudioParamOptions.xml \
-    $(COMMON_PATH)/audio/a2dp_audio_policy_configuration.xml:system/vendor/etc/a2dp_audio_policy_configuration.xml \
-    $(COMMON_PATH)/audio/audio_device.xml:system/vendor/etc/audio_device.xml \
-    $(COMMON_PATH)/audio/audio_em.xml:system/vendor/etc/audio_em.xml \
-    $(COMMON_PATH)/audio/audio_policy.conf:system/vendor/etc/audio_policy.conf \
-    $(COMMON_PATH)/audio/audio_policy_configuration.xml:system/vendor/etc/audio_policy_configuration.xml \
-    $(COMMON_PATH)/audio/audio_policy_volumes.xml:system/vendor/etc/audio_policy_volumes.xml \
-    $(COMMON_PATH)/audio/r_submix_audio_policy_configuration.xml:system/vendor/etc/r_submix_audio_policy_configuration.xml \
-    $(COMMON_PATH)/audio/usb_audio_policy_configuration.xml:system/vendor/etc/usb_audio_policy_configuration.xml
+    $(COMMON_PATH)/configs/audio/audio_effects.conf:system/etc/audio_effects.conf \
+    $(COMMON_PATH)/configs/audio/AudioParamOptions.xml:system/vendor/etc/audio_param/AudioParamOptions.xml \
+    $(COMMON_PATH)/configs/audio/a2dp_audio_policy_configuration.xml:system/vendor/etc/a2dp_audio_policy_configuration.xml \
+    $(COMMON_PATH)/configs/audio/audio_device.xml:system/vendor/etc/audio_device.xml \
+    $(COMMON_PATH)/configs/audio/audio_em.xml:system/vendor/etc/audio_em.xml \
+    $(COMMON_PATH)/configs/audio/audio_policy.conf:system/vendor/etc/audio_policy.conf \
+    $(COMMON_PATH)/configs/audio/audio_policy_configuration.xml:system/vendor/etc/audio_policy_configuration.xml \
+    $(COMMON_PATH)/configs/audio/audio_policy_volumes.xml:system/vendor/etc/audio_policy_volumes.xml \
+    $(COMMON_PATH)/configs/audio/r_submix_audio_policy_configuration.xml:system/vendor/etc/r_submix_audio_policy_configuration.xml \
+    $(COMMON_PATH)/configs/audio/usb_audio_policy_configuration.xml:system/vendor/etc/usb_audio_policy_configuration.xml
 
 # Bluetooth
 PRODUCT_PACKAGES += \
