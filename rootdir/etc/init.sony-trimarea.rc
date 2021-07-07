@@ -17,6 +17,6 @@ on post-fs-data
 service tad_static /sbin/tad_static /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/ta 0,16
     user tad
     group tad root
-    socket tad stream 0660 system trimarea
+    socket tad stream 0770 system trimarea
     class core
     seclabel u:r:tad:s0
