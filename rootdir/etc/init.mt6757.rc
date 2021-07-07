@@ -154,6 +154,9 @@ on fs
     chown system system /sys/devices/platform/battery/SC30_Status
     chown system system /sys/devices/platform/battery/Chk_SC30_Data
 
+	# Disable OEM's bootanimation
+	mount none /oem/lost+found /oem/media/bootanimation.zip bind
+
 	# Battery Health
     chown system system /sys/devices/platform/battery/charge_full_design
     chown system system /sys/devices/platform/battery/age_counter
