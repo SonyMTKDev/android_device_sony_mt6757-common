@@ -154,6 +154,10 @@ TARGET_LD_SHIM_LIBS := \
 	/system/lib/libaal.so|libshim_fake_log_print.so \
 	/system/lib64/libaal.so|libshim_fake_log_print.so
 
+# FS Gen
+TARGET_FS_CONFIG_GEN := \
+	$(COMMON_PATH)/fs/config.aid
+
 # Wifi
 BOARD_WLAN_DEVICE := MediaTek
 WPA_SUPPLICANT_VERSION := VER_0_8_X
