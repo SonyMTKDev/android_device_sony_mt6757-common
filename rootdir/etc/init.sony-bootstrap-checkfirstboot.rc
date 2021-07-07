@@ -3,4 +3,4 @@
 # All rights, including trade secret rights, reserved.
 #
 on init
-    exec u:r:tad:s0 system -- /sbin/checkfirstboot
+    exec u:r:root:s0 system -- /sbin/checkfirstboot

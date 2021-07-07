@@ -6,17 +6,16 @@
 on init
     # Start the TrimArea Daemon. It must be started before fota-ua
     wait /dev/block/mmcblk0p1
-    chown tad tad /dev/block/mmcblk0p1
+    chown system root /dev/block/mmcblk0p1
     chmod 0770 /dev/block/mmcblk0p1
     class_start trimarea
-    exec u:r:tad:s0 system -- /sbin/wait4tad_static
+    exec u:r:root:s0 system -- /sbin/wait4tad_static
 
 on post-fs-data
     start ta_ccci_service
 
 service tad_static /sbin/tad_static /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/ta 0,16
-    user tad
-    group tad root
+    user system
+    group system root
     socket tad stream 0770 system trimarea
     class core
-    seclabel u:r:tad:s0
