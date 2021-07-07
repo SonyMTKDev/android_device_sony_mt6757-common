@@ -18,4 +18,4 @@ service tad_static /sbin/tad_static /dev/block/platform/mtk-msdc.0/11230000.msdc
     user system
     group system root
     socket tad stream 0770 system trimarea
-    class core
+    class trimarea
