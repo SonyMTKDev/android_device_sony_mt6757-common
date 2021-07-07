@@ -14,7 +14,7 @@ on init
 on post-fs-data
     start ta_ccci_service
 
-service tad_static /sbin/tad_static /dev/block/mmcblk0p1 0,16
+service tad_static /sbin/tad_static /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/ta 0,16
     user tad
     group tad root
     socket tad stream 0660 system trimarea
