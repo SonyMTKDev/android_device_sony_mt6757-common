@@ -8,6 +8,8 @@
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/nvcfg /nvcfg ext4 noatime,nosuid,nodev,noauto_da_alloc,commit=1,nodelalloc wait,check,formattable
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/persist /persist ext4 noatime,nosuid,nodev,noauto_da_alloc,commit=1,nodelalloc wait,check,formattable
 
+/dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/oem /oem ext4 ro wait
+
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/frp /persistent emmc defaults defaults
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/nvram /nvram emmc defaults defaults
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/proinfo /proinfo emmc defaults defaults
