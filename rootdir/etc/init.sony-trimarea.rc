@@ -9,7 +9,6 @@ on init
     chown system root /dev/block/mmcblk0p1
     chmod 0770 /dev/block/mmcblk0p1
     class_start trimarea
-    exec u:r:root:s0 system -- /sbin/wait4tad_static
 
 on post-fs-data
     start ta_ccci_service

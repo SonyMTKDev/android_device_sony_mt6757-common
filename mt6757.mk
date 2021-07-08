@@ -249,7 +249,6 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/rootdir/sbin/mr:root/sbin/mr \
     $(COMMON_PATH)/rootdir/sbin/tad_static:root/sbin/tad_static \
     $(COMMON_PATH)/rootdir/sbin/ua-data-mounter:root/sbin/ua-data-mounter \
-    $(COMMON_PATH)/rootdir/sbin/wait4tad_static:root/sbin/wait4tad_static \
     $(COMMON_PATH)/rootdir/sbin/wipedata:root/sbin/wipedata
 
 # Seccomp
