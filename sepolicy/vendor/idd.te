@@ -1,0 +1,7 @@
+type idd, domain;
+type idd_root_dir, file_type;
+type idd_socket_file, file_type;
+type idd_data_file, file_type;
+type idd_lostfound_file, file_type;
+type idd_output_file, file_type;
+type idd_rca_file, file_type;

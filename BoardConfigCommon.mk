@@ -138,6 +138,9 @@ BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
 TARGET_SYSTEM_PROP := $(COMMON_PATH)/system.prop
 
+# SELinux
+BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
+
 # Use dlmalloc instead of jemalloc for mallocs
 MALLOC_SVELTE := true
 

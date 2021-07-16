@@ -1,0 +1,4 @@
+vendor.semc.hardware.secd::IDeviceSecurity                                        u:object_r:hal_secd_hwservice:s0
+vendor.semc.system.idd.fallback::IIddFallback                                     u:object_r:hal_idd_fallback_hwservice:s0
+vendor.semc.system.idd::IIdd                                                      u:object_r:hal_idd_hwservice:s0
+vendor.somc.hardware.miscta::IMisctaGlobal                                        u:object_r:hal_miscta_hwservice:s0

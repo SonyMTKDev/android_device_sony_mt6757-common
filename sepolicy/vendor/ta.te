@@ -1,0 +1,2 @@
+type ta_block_device, dev_type;
+type tareset_notfirstboot_prop, domain;
