@@ -1616,7 +1616,6 @@ vendor/bin/muxreport
 vendor/lib/libccci_util.so
 vendor/lib64/libccci_util.so
 
-
 # RIL
 vendor/bin/hw/rilproxy
 vendor/lib/libmal.so
@@ -1631,11 +1630,13 @@ vendor/lib/libmal_simmngr.so
 vendor/lib/mtk-ril.so
 vendor/lib/mtk-rilproxy.so
 vendor/lib/librilmtk.so
+-vendor/lib/libril.so
 vendor/lib/librilproxy.so
 vendor/lib/librilproxyutils.so
 vendor/lib/librilutilsmtk.so
 vendor/lib64/mtk-ril.so
 vendor/lib64/mtk-rilproxy.so
+-vendor/lib64/libril.so
 vendor/lib64/librilmtk.so
 vendor/lib64/librilproxy.so
 vendor/lib64/libmal.so

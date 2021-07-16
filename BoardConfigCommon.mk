@@ -128,6 +128,9 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 # Recovery
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/etc/recovery.fstab
 
+# RIL
+BOARD_PROVIDES_LIBRIL := true
+
 # Sensors
 TARGET_NO_SENSOR_PERMISSION_CHECK := true
 
