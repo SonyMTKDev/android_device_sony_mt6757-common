@@ -1655,6 +1655,19 @@ vendor/lib64/libmal_simmngr.so
 vendor/lib64/librilproxyutils.so
 vendor/lib64/librilutilsmtk.so
 
+# RIL Frameworks
+-framework/com.sonyericsson.idd_impl.jar
+-framework/com.sonymobile.miscta_impl.jar
+-framework/mediatek-common.jar
+-framework/mediatek-framework.jar
+-framework/mediatek-ims-common.jar
+-framework/mediatek-packages-teleservice.jar
+-framework/mediatek-telecom-common.jar
+-framework/mediatek-telephony-base.jar
+-framework/mediatek-telephony-common.jar
+-framework/ModemSwitcher.jar
+-framework/somc-ext-telephony.jar
+
 # Wi-Fi
 vendor/bin/wifi2agps
 vendor/bin/wmt_concurrency
