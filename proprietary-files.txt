@@ -1279,9 +1279,13 @@ lib/libcei_sensor_jni.so
 vendor/etc/sensors/smd.conf
 vendor/lib/libsensorndkbridge.so
 vendor/lib/sensors.mtk-hinoki.so
+vendor/lib/sensors.mtk-redwood.so
+vendor/lib/sensors.mtk-teak.so
 vendor/lib/sensors.smd.so
 vendor/lib64/libsensorndkbridge.so
 vendor/lib64/sensors.mtk-hinoki.so
+vendor/lib64/sensors.mtk-redwood.so
+vendor/lib64/sensors.mtk-teak.so
 vendor/lib64/sensors.smd.so
 vendor/lib/libhwm.so
 vendor/lib64/libhwm.so
