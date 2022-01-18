@@ -221,6 +221,9 @@ PRODUCT_PACKAGES+= \
     android.hardware.radio@1.0 \
     android.hardware.radio.deprecated@1.0
 
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/configs/ril/apns-conf.xml:system/etc/apns-conf.xml
+
 # Rootdir
 PRODUCT_PACKAGES += \
     fstab.enableswap \
