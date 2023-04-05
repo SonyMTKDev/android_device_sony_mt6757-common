@@ -235,7 +235,13 @@ PRODUCT_BOOT_JARS += \
     somc-ext-telephony
 
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/configs/ril/apns-conf.xml:system/etc/apns-conf.xml
+    $(COMMON_PATH)/configs/ril/apns-conf.xml:system/etc/apns-conf.xml \
+    $(COMMON_PATH)/configs/permissions/com.compal.modemswitcher.xml:system/etc/permissions/com.compal.modemswitcher.xml \
+    $(COMMON_PATH)/configs/permissions/com.sonyericsson.idd.xml:system/etc/permissions/com.sonyericsson.idd.xml \
+    $(COMMON_PATH)/configs/permissions/com.sonymobile.miscta.xml:system/etc/permissions/com.sonymobile.miscta.xml \
+    $(COMMON_PATH)/configs/permissions/com.sonymobile.telephony.extension.somc-ext-telephony.xml:system/etc/permissions/com.sonymobile.telephony.extension.somc-ext-telephony.xml \
+    $(COMMON_PATH)/configs/permissions/mediatek-packages-teleservice.xml:system/etc/permissions/mediatek-packages-teleservice.xml \
+    $(COMMON_PATH)/configs/permissions/privapp-permissions-mediatek.xml:system/etc/permissions/privapp-permissions-mediatek.xml
 
 # Rootdir
 PRODUCT_PACKAGES += \
