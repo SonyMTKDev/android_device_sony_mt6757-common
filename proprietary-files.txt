@@ -1659,7 +1659,7 @@ vendor/lib64/librilutilsmtk.so
 -framework/com.sonyericsson.idd_impl.jar
 -framework/com.sonymobile.miscta_impl.jar
 -framework/mediatek-common.jar
--framework/mediatek-framework.jar
+-framework/mediatek-framework.jar|10591a81a09248e427b3331684cc4866e148abc9
 -framework/mediatek-ims-common.jar
 -framework/mediatek-packages-teleservice.jar
 -framework/mediatek-telecom-common.jar
