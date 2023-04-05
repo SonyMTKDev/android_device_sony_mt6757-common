@@ -1,0 +1,1028 @@
+From d79f680b40f105051e2bc860eca4964363f9dab9 Mon Sep 17 00:00:00 2001
+From: jmpfbmx <jmpf.bmx@gmail.com>
+Date: Wed, 5 Apr 2023 23:15:08 +0200
+Subject: [PATCH] ims: Import MTK bits
+
+Signed-off-by: jmpfbmx <jmpf.bmx@gmail.com>
+Change-Id: I136c947afcac3ab2d0482523f9382785dc84c7f2
+---
+ src/java/com/android/ims/ImsCall.java    | 139 ++++++++++----
+ src/java/com/android/ims/ImsManager.java | 231 ++++++++++++++++++-----
+ src/java/com/android/ims/ImsUt.java      |  20 +-
+ 3 files changed, 299 insertions(+), 91 deletions(-)
+
+diff --git a/src/java/com/android/ims/ImsCall.java b/src/java/com/android/ims/ImsCall.java
+index c5e6368..c32e0fe 100644
+--- a/src/java/com/android/ims/ImsCall.java
++++ b/src/java/com/android/ims/ImsCall.java
+@@ -33,6 +33,7 @@ import android.telecom.ConferenceParticipant;
+ import android.telecom.Connection;
+ import android.telephony.Rlog;
+ import java.util.Objects;
++import java.util.concurrent.CopyOnWriteArrayList;
+ import java.util.concurrent.atomic.AtomicInteger;
+ 
+ import android.telephony.ServiceState;
+@@ -58,7 +59,7 @@ public class ImsCall implements ICall {
+ 
+     // This flag is meant to be used as a debugging tool to quickly see all logs
+     // regardless of the actual log level set on this component.
+-    private static final boolean FORCE_DEBUG = false; /* STOPSHIP if true */
++    private static final boolean FORCE_DEBUG = true; /* STOPSHIP if true */
+ 
+     // We will log messages guarded by these flags at the info level. If logging is required
+     // to occur at (and only at) a particular log level, please use the logd, logv and loge
+@@ -76,7 +77,10 @@ public class ImsCall implements ICall {
+     // across different IMS implementations.
+     private static final boolean CONF_DBG = true;
+ 
+-    private List<ConferenceParticipant> mConferenceParticipants;
++    /// M: [ALPS02822042] use concurrent array list to avoid concurrent IO. @{
++    // private List<ConferenceParticipant> mConferenceParticipants;
++    private CopyOnWriteArrayList<ConferenceParticipant> mConferenceParticipants;
++    /// @}
+     /**
+      * Listener for events relating to an IMS call, such as when a call is being
+      * received ("on ringing") or a call is outgoing ("on calling").
+@@ -473,44 +477,44 @@ public class ImsCall implements ICall {
+     }
+ 
+     // List of update operation for IMS call control
+-    private static final int UPDATE_NONE = 0;
++    protected static final int UPDATE_NONE = 0;
+     private static final int UPDATE_HOLD = 1;
+-    private static final int UPDATE_HOLD_MERGE = 2;
++    protected static final int UPDATE_HOLD_MERGE = 2;
+     private static final int UPDATE_RESUME = 3;
+     private static final int UPDATE_MERGE = 4;
+     private static final int UPDATE_EXTEND_TO_CONFERENCE = 5;
+     private static final int UPDATE_UNSPECIFIED = 6;
+ 
+     // For synchronization of private variables
+-    private Object mLockObj = new Object();
+-    private Context mContext;
++    protected Object mLockObj = new Object();
++    protected Context mContext;
+ 
+     // true if the call is established & in the conversation state
+     private boolean mInCall = false;
+     // true if the call is on hold
+     // If it is triggered by the local, mute the call. Otherwise, play local hold tone
+     // or network generated media.
+-    private boolean mHold = false;
++    protected boolean mHold = false;
+     // true if the call is on mute
+     private boolean mMute = false;
+     // It contains the exclusive call update request. Refer to UPDATE_*.
+-    private int mUpdateRequest = UPDATE_NONE;
++    protected int mUpdateRequest = UPDATE_NONE;
+ 
+-    private ImsCall.Listener mListener = null;
++    protected ImsCall.Listener mListener = null;
+ 
+     // When merging two calls together, the "peer" call that will merge into this call.
+     private ImsCall mMergePeer = null;
+     // When merging two calls together, the "host" call we are merging into.
+-    private ImsCall mMergeHost = null;
++    protected ImsCall mMergeHost = null;
+ 
+     // True if Conference request was initiated by
+     // Foreground Conference call else it will be false
+     private boolean mMergeRequestedByConference = false;
+     // Wrapper call session to interworking the IMS service (server).
+-    private ImsCallSession mSession = null;
++    protected ImsCallSession mSession = null;
+     // Call profile of the current session.
+     // It can be changed at anytime when the call is updated.
+-    private ImsCallProfile mCallProfile = null;
++    protected ImsCallProfile mCallProfile = null;
+     // Call profile to be updated after the application's action (accept/reject)
+     // to the call update. After the application's action (accept/reject) is done,
+     // it will be set to null.
+@@ -522,7 +526,7 @@ public class ImsCall implements ICall {
+ 
+     // The temporary ImsCallSession that could represent the merged call once
+     // we receive notification that the merge was successful.
+-    private ImsCallSession mTransientConferenceSession = null;
++    protected ImsCallSession mTransientConferenceSession = null;
+     // While a merge is progressing, we bury any session termination requests
+     // made on the original ImsCallSession until we have closure on the merge request
+     // If the request ultimately fails, we need to act on the termination request
+@@ -564,7 +568,7 @@ public class ImsCall implements ICall {
+      * When {@code false}, this {@link ImsCall} is a member of a conference started on another
+      * device.
+      */
+-    private boolean mIsConferenceHost = false;
++    protected boolean mIsConferenceHost = false;
+ 
+     /**
+      * Tracks whether this {@link ImsCall} has been a video call at any point in its lifetime.
+@@ -588,7 +592,7 @@ public class ImsCall implements ICall {
+     /**
+      * The current ImsCallSessionListenerProxy.
+      */
+-    private ImsCallSessionListenerProxy mImsCallSessionListenerProxy;
++    protected ImsCallSessionListenerProxy mImsCallSessionListenerProxy;
+ 
+     /**
+      * When calling {@link #terminate(int, int)}, an override for the termination reason which the
+@@ -597,7 +601,7 @@ public class ImsCall implements ICall {
+      * Necessary because passing in an unexpected {@link ImsReasonInfo} reason code to
+      * {@link #terminate(int)} will cause the modem to ignore the terminate request.
+      */
+-    private int mOverrideReason = ImsReasonInfo.CODE_UNSPECIFIED;
++    protected int mOverrideReason = ImsReasonInfo.CODE_UNSPECIFIED;
+ 
+     /**
+      * Create an IMS call object.
+@@ -686,7 +690,7 @@ public class ImsCall implements ICall {
+      *
+      * @param profile The new call profile.
+      */
+-    private void setCallProfile(ImsCallProfile profile) {
++    protected void setCallProfile(ImsCallProfile profile) {
+         synchronized(mLockObj) {
+             mCallProfile = profile;
+             trackVideoStateHistory(mCallProfile);
+@@ -1622,7 +1626,7 @@ public class ImsCall implements ICall {
+             // Make a copy of the current ImsCallProfile and modify it to enable RTT
+             Parcel p = Parcel.obtain();
+             mCallProfile.writeToParcel(p, 0);
+-            ImsCallProfile requestedProfile = new ImsCallProfile(p);
++            ImsCallProfile requestedProfile = new ImsCallProfile();
+             requestedProfile.mMediaProfile.setRttMode(ImsStreamMediaProfile.RTT_MODE_FULL);
+ 
+             mSession.sendRttModifyRequest(requestedProfile);
+@@ -1660,7 +1664,7 @@ public class ImsCall implements ICall {
+     /**
+      * Creates an IMS call session listener.
+      */
+-    private ImsCallSession.Listener createCallSessionListener() {
++    protected ImsCallSession.Listener createCallSessionListener() {
+         mImsCallSessionListenerProxy = new ImsCallSessionListenerProxy();
+         return mImsCallSessionListenerProxy;
+     }
+@@ -1673,7 +1677,7 @@ public class ImsCall implements ICall {
+         return mImsCallSessionListenerProxy;
+     }
+ 
+-    private ImsCall createNewCall(ImsCallSession session, ImsCallProfile profile) {
++    protected ImsCall createNewCall(ImsCallSession session, ImsCallProfile profile) {
+         ImsCall call = new ImsCall(mContext, profile);
+ 
+         try {
+@@ -1733,7 +1737,7 @@ public class ImsCall implements ICall {
+         }
+     }
+ 
+-    private void mergeInternal() {
++    protected void mergeInternal() {
+         if (CONF_DBG) {
+             logi("mergeInternal :: ");
+         }
+@@ -1767,7 +1771,10 @@ public class ImsCall implements ICall {
+         }
+ 
+         Iterator<Entry<String, Bundle>> iterator = participants.iterator();
+-        mConferenceParticipants = new ArrayList<>(participants.size());
++        /// M: [ALPS02822042] use concurrent array list to avoid concurrent IO. @{
++        //mConferenceParticipants = new ArrayList<ConferenceParticipant>(participants.size());
++        mConferenceParticipants = new CopyOnWriteArrayList<ConferenceParticipant>();
++        /// @}
+         while (iterator.hasNext()) {
+             Entry<String, Bundle> entry = iterator.next();
+ 
+@@ -1818,7 +1825,7 @@ public class ImsCall implements ICall {
+      *
+      * @param reasonInfo The reason for the session termination
+      */
+-    private void processCallTerminated(ImsReasonInfo reasonInfo) {
++    protected void processCallTerminated(ImsReasonInfo reasonInfo) {
+         logi("processCallTerminated :: reason=" + reasonInfo + " userInitiated = " +
+                 mTerminationRequestPending);
+ 
+@@ -1873,14 +1880,14 @@ public class ImsCall implements ICall {
+      * @param session - The {@link ImsCallSession} that the function needs to analyze
+      * @return true if this is the transient {@link ImsCallSession}, false otherwise.
+      */
+-    private boolean isTransientConferenceSession(ImsCallSession session) {
++    protected boolean isTransientConferenceSession(ImsCallSession session) {
+         if (session != null && session != mSession && session == mTransientConferenceSession) {
+             return true;
+         }
+         return false;
+     }
+ 
+-    private void setTransientSessionAsPrimary(ImsCallSession transientSession) {
++    protected void setTransientSessionAsPrimary(ImsCallSession transientSession) {
+         synchronized (ImsCall.this) {
+             mSession.setListener(null);
+             mSession = transientSession;
+@@ -1893,7 +1900,13 @@ public class ImsCall implements ICall {
+             // If the peer is dead, let's not play a disconnect sound for it when we
+             // unbury the termination callback.
+             logi("markCallAsMerged");
+-            setIsMerged(playDisconnectTone);
++            /// M: ALPS02706011 Fix google issue. @{
++            /// Merge call to conference call, unexpected "call ended" pops up.
++            /// ImsPhoneCallTracker will reset disconnected reason when target
++            /// call merge to conference, ims call's isMerged() should be set to true.
++            /// Ims call does not set the merged value to true when process merge complete.
++            setIsMerged(!playDisconnectTone);
++            /// @}
+             mSessionEndDuringMerge = true;
+             String reasonInfo;
+             int reasonCode = ImsReasonInfo.CODE_UNSPECIFIED;
+@@ -1947,7 +1960,7 @@ public class ImsCall implements ICall {
+      * This function should only be called in the context of the merge host to simplify logic
+      *
+      */
+-    private void processMergeComplete() {
++    public void processMergeComplete() {
+         logi("processMergeComplete :: ");
+ 
+         // The logic simplifies if we can assume that this function is only called on
+@@ -2180,7 +2193,7 @@ public class ImsCall implements ICall {
+      *
+      * @param reasonInfo The {@link ImsReasonInfo} why the merge failed.
+      */
+-    private void processMergeFailed(ImsReasonInfo reasonInfo) {
++    protected void processMergeFailed(ImsReasonInfo reasonInfo) {
+         logi("processMergeFailed :: reason=" + reasonInfo);
+ 
+         ImsCall.Listener listener;
+@@ -2246,7 +2259,10 @@ public class ImsCall implements ICall {
+ 
+             synchronized(ImsCall.this) {
+                 listener = mListener;
+-                mCallProfile.mMediaProfile.copyFrom(profile);
++                /// M: Telephony add-on @{
++                //mCallProfile.mMediaProfile.copyFrom(profile);
++                copyCallProfileIfNecessary(profile);
++                /// @}
+             }
+ 
+             if (listener != null) {
+@@ -2333,6 +2349,10 @@ public class ImsCall implements ICall {
+                 return;
+             }
+ 
++            /// M: Telephony add-on @{
++            checkIfConferenceMerge(reasonInfo);
++            /// @}
++
+             if (mOverrideReason != ImsReasonInfo.CODE_UNSPECIFIED) {
+                 logi("callSessionTerminated :: overrideReasonInfo=" + mOverrideReason);
+                 reasonInfo = new ImsReasonInfo(mOverrideReason, reasonInfo.getExtraCode(),
+@@ -2357,7 +2377,12 @@ public class ImsCall implements ICall {
+             synchronized(ImsCall.this) {
+                 // If the session was held, it is no longer pending a merge -- this means it could
+                 // not be merged into the conference and was held instead.
+-                setCallSessionMergePending(false);
++                /// M: Telephony add-on @{
++                //setCallSessionMergePending(false);
++                if (shouldSkipResetMergePending() == false) {
++                    setCallSessionMergePending(false);
++                }
++                /// @}
+ 
+                 setCallProfile(profile);
+ 
+@@ -2369,6 +2394,9 @@ public class ImsCall implements ICall {
+ 
+                 mUpdateRequest = UPDATE_NONE;
+                 listener = mListener;
++                /// M: Telephony add-on @{
++                updateHoldStateIfNecessary(true);
++                /// @}
+             }
+ 
+             if (listener != null) {
+@@ -2408,6 +2436,9 @@ public class ImsCall implements ICall {
+ 
+                 mUpdateRequest = UPDATE_NONE;
+                 listener = mListener;
++                /// M: Telephony add-on @{
++                updateHoldStateIfNecessary(false);
++                /// @}
+             }
+ 
+             if (listener != null) {
+@@ -2458,7 +2489,12 @@ public class ImsCall implements ICall {
+ 
+             // If this call was pending a merge, it is not anymore. This is the case when we
+             // are merging in a new call into an existing conference.
+-            setCallSessionMergePending(false);
++            /// M: Telephony add-on @{
++            //setCallSessionMergePending(false);
++            if (shouldSkipResetMergePending() == false) {
++                setCallSessionMergePending(false);
++            }
++            /// @}
+ 
+             // TOOD: When we are merging a new call into an existing conference we are waiting
+             // for 2 triggers to let us know that the conference has been established, the first
+@@ -2553,7 +2589,7 @@ public class ImsCall implements ICall {
+          * This method check if session exists as a session on the current
+          * ImsCall or its counterpart if it is in the process of a conference
+          */
+-        private boolean doesCallSessionExistsInMerge(ImsCallSession cs) {
++        protected boolean doesCallSessionExistsInMerge(ImsCallSession cs) {
+             String callId = cs.getCallId();
+             return ((isMergeHost() && Objects.equals(mMergePeer.mSession.getCallId(), callId)) ||
+                     (isMergePeer() && Objects.equals(mMergeHost.mSession.getCallId(), callId)) ||
+@@ -2810,6 +2846,9 @@ public class ImsCall implements ICall {
+             ImsCall.Listener listener;
+ 
+             synchronized(ImsCall.this) {
++                /// M: Telephony add-on @{
++                resetConferenceMergingFlag();
++                /// @}
+                 listener = mListener;
+             }
+ 
+@@ -2836,6 +2875,9 @@ public class ImsCall implements ICall {
+             ImsCall.Listener listener;
+ 
+             synchronized(ImsCall.this) {
++                /// M: Telephony add-on @{
++                resetConferenceMergingFlag();
++                /// @}
+                 listener = mListener;
+             }
+ 
+@@ -3146,7 +3188,7 @@ public class ImsCall implements ICall {
+      * @param updateRequest The update request.
+      * @return The string representation.
+      */
+-    private String updateRequestToString(int updateRequest) {
++    protected String updateRequestToString(int updateRequest) {
+         switch (updateRequest) {
+             case UPDATE_NONE:
+                 return "NONE";
+@@ -3235,7 +3277,7 @@ public class ImsCall implements ICall {
+      *
+      * @return {@code true} if the call is the merge host.
+      */
+-    private boolean isMergeHost() {
++    protected boolean isMergeHost() {
+         return mMergePeer != null && mMergeHost == null;
+     }
+ 
+@@ -3263,7 +3305,7 @@ public class ImsCall implements ICall {
+      * @param callSessionMergePending {@code true} if a merge into the conference is pending,
+      *      {@code false} otherwise.
+      */
+-    private void setCallSessionMergePending(boolean callSessionMergePending) {
++    protected void setCallSessionMergePending(boolean callSessionMergePending) {
+         mCallSessionMergePending = callSessionMergePending;
+     }
+ 
+@@ -3498,7 +3540,7 @@ public class ImsCall implements ICall {
+      * Log a string to the radio buffer at the info level.
+      * @param s The message to log
+      */
+-    private void logi(String s) {
++    protected void logi(String s) {
+         Log.i(TAG, appendImsCallInfoToString(s));
+     }
+ 
+@@ -3506,7 +3548,7 @@ public class ImsCall implements ICall {
+      * Log a string to the radio buffer at the debug level.
+      * @param s The message to log
+      */
+-    private void logd(String s) {
++    protected void logd(String s) {
+         Log.d(TAG, appendImsCallInfoToString(s));
+     }
+ 
+@@ -3522,7 +3564,7 @@ public class ImsCall implements ICall {
+      * Log a string to the radio buffer at the error level.
+      * @param s The message to log
+      */
+-    private void loge(String s) {
++    protected void loge(String s) {
+         Log.e(TAG, appendImsCallInfoToString(s));
+     }
+ 
+@@ -3531,7 +3573,26 @@ public class ImsCall implements ICall {
+      * @param s The message to log
+      * @param t The associated throwable
+      */
+-    private void loge(String s, Throwable t) {
++    protected void loge(String s, Throwable t) {
+         Log.e(TAG, appendImsCallInfoToString(s), t);
+     }
++
++    /// M: Telephony add-on @{
++    protected void copyCallProfileIfNecessary(ImsStreamMediaProfile profile) {
++        mCallProfile.mMediaProfile.copyFrom(profile);
++    }
++
++    protected void checkIfConferenceMerge(ImsReasonInfo reasonInfo) {
++    }
++
++    protected void updateHoldStateIfNecessary(boolean hold) {
++    }
++
++    protected boolean shouldSkipResetMergePending() {
++        return false;
++    }
++
++    protected void resetConferenceMergingFlag() {
++    }
++    /// @}
+ }
+diff --git a/src/java/com/android/ims/ImsManager.java b/src/java/com/android/ims/ImsManager.java
+index 5319ea4..52377aa 100644
+--- a/src/java/com/android/ims/ImsManager.java
++++ b/src/java/com/android/ims/ImsManager.java
+@@ -56,6 +56,8 @@ import com.android.internal.telephony.ExponentialBackoff;
+ 
+ import java.io.FileDescriptor;
+ import java.io.PrintWriter;
++import java.lang.reflect.Constructor;
++import java.lang.reflect.Method;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.concurrent.ConcurrentLinkedDeque;
+@@ -181,38 +183,38 @@ public class ImsManager {
+     private static HashMap<Integer, ImsManager> sImsManagerInstances =
+             new HashMap<Integer, ImsManager>();
+ 
+-    private Context mContext;
+-    private CarrierConfigManager mConfigManager;
+-    private int mPhoneId;
++    protected Context mContext;
++    protected CarrierConfigManager mConfigManager;
++    protected int mPhoneId;
+     private final boolean mConfigDynamicBind;
+-    private ImsServiceProxyCompat mImsServiceProxy = null;
++    protected ImsServiceProxyCompat mImsServiceProxy = null;
+     private ImsServiceDeathRecipient mDeathRecipient = new ImsServiceDeathRecipient();
+     // Ut interface for the supplementary service configuration
+-    private ImsUt mUt = null;
++    protected ImsUt mUt = null;
+     // Interface to get/set ims config items
+-    private ImsConfig mConfig = null;
+-    private boolean mConfigUpdated = false;
++    protected ImsConfig mConfig = null;
++    protected boolean mConfigUpdated = false;
+ 
+-    private ImsConfigListener mImsConfigListener;
++    public ImsConfigListener mImsConfigListener;
+ 
+     // ECBM interface
+-    private ImsEcbm mEcbm = null;
++    protected ImsEcbm mEcbm = null;
+ 
+-    private ImsMultiEndpoint mMultiEndpoint = null;
++    protected ImsMultiEndpoint mMultiEndpoint = null;
+ 
+     private Set<ImsServiceProxy.INotifyStatusChanged> mStatusCallbacks = new HashSet<>();
+ 
+     // Keep track of the ImsRegistrationListenerProxys that have been created so that we can
+     // remove them from the ImsService.
+-    private final Set<ImsConnectionStateListener> mRegistrationListeners = new HashSet<>();
++    protected final Set<ImsConnectionStateListener> mRegistrationListeners = new HashSet<>();
+ 
+-    private final ImsRegistrationListenerProxy mRegistrationListenerProxy =
++    protected ImsRegistrationListenerProxy mRegistrationListenerProxy =
+             new ImsRegistrationListenerProxy();
+ 
+     // When true, we have registered the mRegistrationListenerProxy with the ImsService. Don't do
+     // it again.
+-    private boolean mHasRegisteredForProxy = false;
+-    private final Object mHasRegisteredLock = new Object();
++    protected boolean mHasRegisteredForProxy = false;
++    protected final Object mHasRegisteredLock = new Object();
+ 
+     // SystemProperties used as cache
+     private static final String VOLTE_PROVISIONED_PROP = "net.lte.ims.volte.provisioned";
+@@ -230,6 +232,10 @@ public class ImsManager {
+     private ConcurrentLinkedDeque<ImsReasonInfo> mRecentDisconnectReasons =
+             new ConcurrentLinkedDeque<>();
+ 
++    /// M: Revise for telephony add-on @{
++    private static Class<?> sMtkImsManager = getMtkImsManager();
++    /// @}
++
+     // Exponential backoff for provisioning cache update. May be null for instances of ImsManager
+     // that are not on a thread supporting a looper.
+     private ExponentialBackoff mProvisionBackoff;
+@@ -249,6 +255,8 @@ public class ImsManager {
+      * @return the manager instance corresponding to the phoneId
+      */
+     public static ImsManager getInstance(Context context, int phoneId) {
++
++        log("getInstance() : phoneId=" + phoneId);
+         synchronized (sImsManagerInstances) {
+             if (sImsManagerInstances.containsKey(phoneId)) {
+                 ImsManager m = sImsManagerInstances.get(phoneId);
+@@ -258,8 +266,25 @@ public class ImsManager {
+                 }
+                 return m;
+             }
+-
+-            ImsManager mgr = new ImsManager(context, phoneId);
++            ///M: Dynamic loading @{
++            ImsManager mgr = null;
++            try {
++                // Use the designated constructor with parameters
++                Class[] cParam = new Class[2];
++                cParam[0] = Context.class;
++                cParam[1] = Integer.TYPE;
++
++                Constructor clazzConstructfunc = sMtkImsManager.getConstructor(cParam);
++                log("constructor function = " + clazzConstructfunc);
++                mgr = (ImsManager) clazzConstructfunc.newInstance(context, phoneId);
++            } catch (NoSuchMethodException nsme) {
++                loge("MtkImsManager Constructor not found! Use AOSP instead!");
++                mgr = new ImsManager(context, phoneId);
++            } catch (Exception  e) {
++                loge("Exception at init MtkImsManager! Use AOSP for instead!");
++                mgr = new ImsManager(context, phoneId);
++            }
++            /// @}
+             sImsManagerInstances.put(phoneId, mgr);
+ 
+             return mgr;
+@@ -410,6 +435,14 @@ public class ImsManager {
+             return true;
+         }
+ 
++        ImsManager imsManager = ImsManager.getInstance(context, 0);
++        if (imsManager != null) {
++            int phoneId = imsManager.getMainCapabilityPhoneId(context);
++            if(phoneId != SubscriptionManager.INVALID_PHONE_INDEX) {
++                return isVolteEnabledByPlatform(context, phoneId);
++            }
++        }
++
+         return context.getResources().getBoolean(
+                 com.android.internal.R.bool.config_device_volte_available)
+                 && getBooleanCarrierConfig(context,
+@@ -417,6 +450,20 @@ public class ImsManager {
+                 && isGbaValid(context);
+     }
+ 
++    /**
++     * Returns a platform configuration for VoLTE which may override the user setting.
++     * To better support MIMS feature, invoke this API with specific phone ID as parameter
++     * and will redirect to ForSlot()
++     */
++    public static boolean isVolteEnabledByPlatform(Context context, int phoneId) {
++        ImsManager imsManager = ImsManager.getInstance(context, phoneId);
++        if (imsManager != null) {
++            return imsManager.isVolteEnabledByPlatformForSlot();
++        }
++        loge("isVolteEnabledByPlatform - cannot get ImsManager instance, phoneId=" + phoneId);
++        return false;
++    }
++
+     /**
+      * Returns a platform configuration for VoLTE which may override the user setting on a per Slot
+      * basis.
+@@ -562,6 +609,14 @@ public class ImsManager {
+             return true;
+         }
+ 
++        ImsManager imsManager = ImsManager.getInstance(context, 0);
++        if (imsManager != null) {
++            int phoneId = imsManager.getMainCapabilityPhoneId(context);
++            if(phoneId != SubscriptionManager.INVALID_PHONE_INDEX) {
++                return isVtEnabledByPlatform(context, phoneId);
++            }
++        }
++
+         return
+                 context.getResources().getBoolean(
+                         com.android.internal.R.bool.config_device_vt_available) &&
+@@ -570,6 +625,20 @@ public class ImsManager {
+                 isGbaValid(context);
+     }
+ 
++    /**
++     * Returns a platform configuration for VT which may override the user setting.
++     * To better support MIMS feature, invoke this API with specific phone ID as parameter
++     * and will redirect to ForSlot()
++     */
++    public static boolean isVtEnabledByPlatform(Context context, int phoneId) {
++        ImsManager imsManager = ImsManager.getInstance(context, phoneId);
++        if (imsManager != null) {
++            return imsManager.isVtEnabledByPlatformForSlot();
++        }
++        loge("isVtEnabledByPlatform - cannot get ImsManager instance, phoneId=" + phoneId);
++        return false;
++    }
++
+     /**
+      * Returns a platform configuration for VT which may override the user setting.
+      *
+@@ -685,7 +754,7 @@ public class ImsManager {
+      * @deprecated Does not support MSIM devices. Please use
+      * {@link #isTurnOffImsAllowedByPlatformForSlot} instead.
+      */
+-    private static boolean isTurnOffImsAllowedByPlatform(Context context) {
++    public static boolean isTurnOffImsAllowedByPlatform(Context context) {
+         if (SystemProperties.getInt(PROPERTY_DBG_ALLOW_IMS_OFF_OVERRIDE,
+                 PROPERTY_DBG_ALLOW_IMS_OFF_OVERRIDE_DEFAULT) == 1) {
+             return true;
+@@ -698,7 +767,7 @@ public class ImsManager {
+      * Returns whether turning off ims is allowed by platform.
+      * The platform property may override the carrier config.
+      */
+-    private boolean isTurnOffImsAllowedByPlatformForSlot() {
++    protected boolean isTurnOffImsAllowedByPlatformForSlot() {
+         if (SystemProperties.getInt(PROPERTY_DBG_ALLOW_IMS_OFF_OVERRIDE,
+                 PROPERTY_DBG_ALLOW_IMS_OFF_OVERRIDE_DEFAULT) == 1) {
+             return true;
+@@ -971,6 +1040,13 @@ public class ImsManager {
+         }
+     }
+ 
++    /// M: ALPS03446598 @{
++    /// Add setWfcModeInternal non-static function to implement AOSP logic
++    protected void setWfcModeInternal(int wfcMode) {
++        setWfcModeInternal(mContext, wfcMode);
++    }
++    /// @}
++
+     private static void setWfcModeInternal(Context context, int wfcMode) {
+         final ImsManager imsManager = ImsManager.getInstance(context,
+                 SubscriptionManager.getDefaultVoicePhoneId());
+@@ -991,7 +1067,7 @@ public class ImsManager {
+         }
+     }
+ 
+-    private void setWfcModeInternalForSlot(int wfcMode) {
++    public void setWfcModeInternalForSlot(int wfcMode) {
+         final int value = wfcMode;
+         Thread thread = new Thread(() -> {
+                 try {
+@@ -1060,7 +1136,7 @@ public class ImsManager {
+         setWfcRoamingSettingInternal(enabled);
+     }
+ 
+-    private void setWfcRoamingSettingInternal(boolean enabled) {
++    public void setWfcRoamingSettingInternal(boolean enabled) {
+         final int value = enabled
+                 ? ImsConfig.FeatureValueConstants.ON
+                 : ImsConfig.FeatureValueConstants.OFF;
+@@ -1090,6 +1166,14 @@ public class ImsManager {
+             return true;
+         }
+ 
++        ImsManager imsManager = ImsManager.getInstance(context, 0);
++        if (imsManager != null){
++            int phoneId = imsManager.getMainCapabilityPhoneId(context);
++            if(phoneId != SubscriptionManager.INVALID_PHONE_INDEX) {
++                return isWfcEnabledByPlatform(context, phoneId);
++            }
++        }
++
+         return
+                context.getResources().getBoolean(
+                        com.android.internal.R.bool.config_device_wfc_ims_available) &&
+@@ -1098,6 +1182,23 @@ public class ImsManager {
+                isGbaValid(context);
+     }
+ 
++    /**
++     * Returns a platform configuration for WFC which may override the user
++     * setting. Note: WFC presumes that VoLTE is enabled (these are
++     * configuration settings which must be done correctly).
++     *
++     * To better support MIMS feature, invoke this API with specific phone ID as parameter
++     * and will redirect to ForSlot()
++     */
++    public static boolean isWfcEnabledByPlatform(Context context, int phoneId) {
++        ImsManager imsManager = ImsManager.getInstance(context, phoneId);
++        if (imsManager != null) {
++            return imsManager.isWfcEnabledByPlatformForSlot();
++        }
++        loge("isWfcEnabledByPlatform - cannot get ImsManager instance, phoneId=" + phoneId);
++        return false;
++    }
++
+     /**
+      * Returns a platform configuration for WFC which may override the user
+      * setting per slot. Note: WFC presumes that VoLTE is enabled (these are
+@@ -1147,7 +1248,7 @@ public class ImsManager {
+      *
+      * Format of EF IST is defined in 3GPP TS 31.103 (Section 4.2.7).
+      */
+-    private boolean isGbaValidForSlot() {
++    protected boolean isGbaValidForSlot() {
+         if (getBooleanCarrierConfigForSlot(
+                 CarrierConfigManager.KEY_CARRIER_IMS_GBA_REQUIRED_BOOL)) {
+             final TelephonyManager telephonyManager = TelephonyManager.getDefault();
+@@ -1386,7 +1487,7 @@ public class ImsManager {
+      * @return whether feature is On
+      * @throws ImsException
+      */
+-    private boolean updateVolteFeatureValue() throws ImsException {
++    protected boolean updateVolteFeatureValue() throws ImsException {
+         boolean available = isVolteEnabledByPlatformForSlot();
+         boolean enabled = isEnhanced4gLteModeSettingEnabledByUserForSlot();
+         boolean isNonTty = isNonTtyOrTtyOnVolteEnabledForSlot();
+@@ -1412,7 +1513,7 @@ public class ImsManager {
+      * @return whether feature is On
+      * @throws ImsException
+      */
+-    private boolean updateVideoCallFeatureValue() throws ImsException {
++    protected boolean updateVideoCallFeatureValue() throws ImsException {
+         boolean available = isVtEnabledByPlatformForSlot();
+         boolean enabled = isVtEnabledByUserForSlot();
+         boolean isNonTty = isNonTtyOrTtyOnVolteEnabledForSlot();
+@@ -1420,8 +1521,13 @@ public class ImsManager {
+         boolean ignoreDataEnabledChanged = getBooleanCarrierConfig(mContext,
+                 CarrierConfigManager.KEY_IGNORE_DATA_ENABLED_CHANGED_FOR_VIDEO_CALLS);
+ 
++        /// M: There is no need to consider the data enabled condition when calculating
++        ///    ViLTE feature value with test SIM inserted @{
++        /// boolean isFeatureOn = available && enabled && isNonTty
++        ///        && (ignoreDataEnabledChanged || isDataEnabled);
+         boolean isFeatureOn = available && enabled && isNonTty
+-                && (ignoreDataEnabledChanged || isDataEnabled);
++                && (ignoreDataEnabledChanged || isDataEnabled || isTestSim());
++        /// @}
+ 
+         log("updateVideoCallFeatureValue: available = " + available
+                 + ", enabled = " + enabled
+@@ -1444,7 +1550,7 @@ public class ImsManager {
+      * @return whether feature is On
+      * @throws ImsException
+      */
+-    private boolean updateWfcFeatureAndProvisionedValues() throws ImsException {
++    protected boolean updateWfcFeatureAndProvisionedValues() throws ImsException {
+         boolean isNetworkRoaming = TelephonyManager.getDefault().isNetworkRoaming();
+         boolean available = isWfcEnabledByPlatformForSlot();
+         boolean enabled = isWfcEnabledByUserForSlot();
+@@ -1469,7 +1575,13 @@ public class ImsManager {
+             mode = ImsConfig.WfcModeFeatureValueConstants.CELLULAR_PREFERRED;
+             roaming = false;
+         }
+-        setWfcModeInternal(mContext, mode);
++        /// M: ALPS03446598 @{
++        /// To support set wfc mode for MSIM device and send AT+EWFCP,
++        /// We use telephony add-on to override AOSP function logic,
++        /// the logic will go to MtkImsManager.setWfcModeInternal non-static if there's Add-on file
++        // setWfcModeInternal(mContext, mode);
++        setWfcModeInternal(mode);
++        /// @}
+         setWfcRoamingSettingInternal(roaming);
+ 
+         return isFeatureOn;
+@@ -1985,7 +2097,7 @@ public class ImsManager {
+      * @deprecated Does not support MSIM devices. Use
+      * {@link #getBooleanCarrierConfigForSlot(Context, String)} instead.
+      */
+-    private static boolean getBooleanCarrierConfig(Context context, String key) {
++    public static boolean getBooleanCarrierConfig(Context context, String key) {
+         CarrierConfigManager configManager = (CarrierConfigManager) context.getSystemService(
+                 Context.CARRIER_CONFIG_SERVICE);
+         PersistableBundle b = null;
+@@ -2006,7 +2118,7 @@ public class ImsManager {
+      * @param key config key defined in CarrierConfigManager
+      * @return boolean value of corresponding key.
+      */
+-    private boolean getBooleanCarrierConfigForSlot(String key) {
++    public boolean getBooleanCarrierConfigForSlot(String key) {
+         int[] subIds = SubscriptionManager.getSubId(mPhoneId);
+         int subId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
+         if (subIds != null && subIds.length >= 1) {
+@@ -2034,7 +2146,7 @@ public class ImsManager {
+      *
+      * @deprecated Doesn't support MSIM devices. Use {@link #getIntCarrierConfigForSlot} instead.
+      */
+-    private static int getIntCarrierConfig(Context context, String key) {
++    public static int getIntCarrierConfig(Context context, String key) {
+         CarrierConfigManager configManager = (CarrierConfigManager) context.getSystemService(
+                 Context.CARRIER_CONFIG_SERVICE);
+         PersistableBundle b = null;
+@@ -2055,7 +2167,7 @@ public class ImsManager {
+      * @param key config key defined in CarrierConfigManager
+      * @return integer value of corresponding key.
+      */
+-    private int getIntCarrierConfigForSlot(String key) {
++    public int getIntCarrierConfigForSlot(String key) {
+         int[] subIds = SubscriptionManager.getSubId(mPhoneId);
+         int subId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
+         if (subIds != null && subIds.length >= 1) {
+@@ -2080,7 +2192,7 @@ public class ImsManager {
+      * @param incomingCallIntent the incoming call broadcast intent
+      * @return the call ID or null if the intent does not contain it
+      */
+-    private static String getCallId(Intent incomingCallIntent) {
++    protected static String getCallId(Intent incomingCallIntent) {
+         if (incomingCallIntent == null) {
+             return null;
+         }
+@@ -2094,7 +2206,7 @@ public class ImsManager {
+      * @param incomingCallIntent the incoming call broadcast intent
+      * @return the session identifier or -1 if the intent does not contain it
+      */
+-    private static int getImsSessionId(Intent incomingCallIntent) {
++    protected static int getImsSessionId(Intent incomingCallIntent) {
+         if (incomingCallIntent == null) {
+             return (-1);
+         }
+@@ -2124,7 +2236,7 @@ public class ImsManager {
+      * 1) com.android.ims.ImsService implementation in ServiceManager (deprecated).
+      * 2) android.telephony.ims.ImsService implementation through ImsResolver.
+      */
+-    private void createImsService() {
++    protected void createImsService() {
+         if (!mConfigDynamicBind) {
+             // Old method of binding
+             Rlog.i(TAG, "Creating ImsService using ServiceManager");
+@@ -2181,7 +2293,7 @@ public class ImsManager {
+      * @param serviceId a service id which is obtained from {@link ImsManager#open}
+      * @param profile a call profile to make the call
+      */
+-    private ImsCallSession createCallSession(int serviceId,
++    protected ImsCallSession createCallSession(int serviceId,
+             ImsCallProfile profile) throws ImsException {
+         try {
+             // Throws an exception if the ImsService Feature is not ready to accept commands.
+@@ -2209,7 +2321,7 @@ public class ImsManager {
+     /**
+      * Used for turning on IMS.if its off already
+      */
+-    private void turnOnIms() throws ImsException {
++    public void turnOnIms() throws ImsException {
+         checkAndThrowExceptionIfServiceUnavailable();
+ 
+         try {
+@@ -2219,13 +2331,13 @@ public class ImsManager {
+         }
+     }
+ 
+-    private boolean isImsTurnOffAllowed() {
++    protected boolean isImsTurnOffAllowed() {
+         return isTurnOffImsAllowedByPlatformForSlot()
+                 && (!isWfcEnabledByPlatformForSlot()
+                 || !isWfcEnabledByUserForSlot());
+     }
+ 
+-    private void setLteFeatureValues(boolean turnOn) {
++    protected void setLteFeatureValues(boolean turnOn) {
+         log("setLteFeatureValues: " + turnOn);
+         try {
+             ImsConfig config = getConfigInterface();
+@@ -2249,7 +2361,7 @@ public class ImsManager {
+         }
+     }
+ 
+-    private void setAdvanced4GMode(boolean turnOn) throws ImsException {
++    public void setAdvanced4GMode(boolean turnOn) throws ImsException {
+         checkAndThrowExceptionIfServiceUnavailable();
+ 
+         // if turnOn: first set feature values then call turnOnIms()
+@@ -2272,7 +2384,7 @@ public class ImsManager {
+      * Used for turning off IMS completely in order to make the device CSFB'ed.
+      * Once turned off, all calls will be over CS.
+      */
+-    private void turnOffIms() throws ImsException {
++    public void turnOffIms() throws ImsException {
+         checkAndThrowExceptionIfServiceUnavailable();
+ 
+         try {
+@@ -2293,7 +2405,7 @@ public class ImsManager {
+     /**
+      * Death recipient class for monitoring IMS service.
+      */
+-    private class ImsServiceDeathRecipient implements IBinder.DeathRecipient {
++    protected class ImsServiceDeathRecipient implements IBinder.DeathRecipient {
+         @Override
+         public void binderDied() {
+             mImsServiceProxy = null;
+@@ -2364,7 +2476,7 @@ public class ImsManager {
+     /**
+      * Adapter class for {@link IImsRegistrationListener}.
+      */
+-    private class ImsRegistrationListenerProxy extends IImsRegistrationListener.Stub {
++    protected class ImsRegistrationListenerProxy extends IImsRegistrationListener.Stub {
+ 
+         @Deprecated
+         public void registrationConnected() {
+@@ -2643,7 +2755,7 @@ public class ImsManager {
+         updateImsServiceConfigForSlot(true);
+     }
+ 
+-    private boolean isDataEnabled() {
++    protected boolean isDataEnabled() {
+         return SystemProperties.getBoolean(DATA_ENABLED_PROP, true);
+     }
+ 
+@@ -2709,4 +2821,39 @@ public class ImsManager {
+         pw.println("  isWfcProvisionedOnDevice = " + isWfcProvisionedOnDeviceForSlot());
+         pw.flush();
+     }
++
++    /// M: Default MTK Implementation @{
++    /**
++     * Get the phone id with main capability.
++     * The main capability phone id defined is different from AOSP.
++     *
++     * @return use SubscriptionManager.INVALID_PHONE_INDEX for AOSP
++     * @hide
++     */
++    protected int getMainCapabilityPhoneId(Context context) {
++        return SubscriptionManager.INVALID_PHONE_INDEX;
++    }
++
++    /**
++     * Check if it is test sim.
++     * @return use false for AOSP
++     * @hide
++     */
++    protected boolean isTestSim() {
++        return false;
++    }
++    /// @}
++
++    /// M: Revise for telephony add-on @{
++    private static Class<?> getMtkImsManager() {
++        try {
++            String className = "com.mediatek.ims.internal.MtkImsManager";
++            Class<?> mtkImsManagerClass = Class.forName(className);
++            return mtkImsManagerClass;
++        } catch (Exception e) {
++            loge("MtkImsManager not found!");
++        }
++        return null;
++    }
++    /// @}
+ }
+diff --git a/src/java/com/android/ims/ImsUt.java b/src/java/com/android/ims/ImsUt.java
+index d8d70b0..3e19e32 100644
+--- a/src/java/com/android/ims/ImsUt.java
++++ b/src/java/com/android/ims/ImsUt.java
+@@ -65,12 +65,12 @@ public class ImsUt implements ImsUtInterface {
+     public static final String CATEGORY_CONF = "CONF";
+ 
+     private static final String TAG = "ImsUt";
+-    private static final boolean DBG = true;
++    protected static final boolean DBG = true;
+ 
+     // For synchronization of private variables
+-    private Object mLockObj = new Object();
+-    private final IImsUt miUt;
+-    private HashMap<Integer, Message> mPendingCmds =
++    protected Object mLockObj = new Object();
++    protected final IImsUt miUt;
++    protected HashMap<Integer, Message> mPendingCmds =
+             new HashMap<Integer, Message>();
+ 
+     public ImsUt(IImsUt iUt) {
+@@ -538,7 +538,7 @@ public class ImsUt implements ImsUtInterface {
+         }
+     }
+ 
+-    private void sendFailureReport(Message result, ImsReasonInfo error) {
++    protected void sendFailureReport(Message result, ImsReasonInfo error) {
+         if (result == null || error == null) {
+             return;
+         }
+@@ -557,7 +557,7 @@ public class ImsUt implements ImsUtInterface {
+         result.sendToTarget();
+     }
+ 
+-    private void sendSuccessReport(Message result) {
++    protected void sendSuccessReport(Message result) {
+         if (result == null) {
+             return;
+         }
+@@ -566,7 +566,7 @@ public class ImsUt implements ImsUtInterface {
+         result.sendToTarget();
+     }
+ 
+-    private void sendSuccessReport(Message result, Object ssInfo) {
++    protected void sendSuccessReport(Message result, Object ssInfo) {
+         if (result == null) {
+             return;
+         }
+@@ -575,15 +575,15 @@ public class ImsUt implements ImsUtInterface {
+         result.sendToTarget();
+     }
+ 
+-    private void log(String s) {
++    protected void log(String s) {
+         Rlog.d(TAG, s);
+     }
+ 
+-    private void loge(String s) {
++    protected void loge(String s) {
+         Rlog.e(TAG, s);
+     }
+ 
+-    private void loge(String s, Throwable t) {
++    protected void loge(String s, Throwable t) {
+         Rlog.e(TAG, s, t);
+     }
+ 
+-- 
+2.17.1
+

@@ -1,0 +1,29 @@
+From ea89a58c6832cff59db852a456b43aaa15ced056 Mon Sep 17 00:00:00 2001
+From: jmpfbmx <jmpf.bmx@gmail.com>
+Date: Wed, 5 Apr 2023 23:13:04 +0200
+Subject: [PATCH] base: media: MediaRecorder: Define setParametersExtra fun
+
+Signed-off-by: jmpfbmx <jmpf.bmx@gmail.com>
+Change-Id: I43a82eaf9a661fb1e4f71aba2ba62da38de3c437
+---
+ media/java/android/media/MediaRecorder.java | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/media/java/android/media/MediaRecorder.java b/media/java/android/media/MediaRecorder.java
+index 59a124fa..c7a2f5f6 100644
+--- a/media/java/android/media/MediaRecorder.java
++++ b/media/java/android/media/MediaRecorder.java
+@@ -1321,6 +1321,10 @@ public class MediaRecorder
+     private native final void native_finalize();
+ 
+     private native void setParameter(String nameValuePair);
++    /**
++     * @hide
++     */
++    public native void setParametersExtra(String nameValuePair);
+ 
+     /**
+      *  Return Metrics data about the current Mediarecorder instance.
+-- 
+2.17.1
+
